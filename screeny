@@ -7,7 +7,7 @@
 version='0.4'
 
 # Displayment
-display=( Host Cpu OS Arch Shell Motherboard HDD Memory Uptime Resolution DE WM WMTheme Font )
+display=( Host Cpu Gpu OS Arch Shell Motherboard HDD Memory Uptime Resolution DE WM WMTheme Font )
 
 # Color Loop
 bld=$'\e[1m'
@@ -70,6 +70,11 @@ detectHost () {
 detectCpu () {
 	cpu=$(awk -F':' '/model name/{ print $2 }' /proc/cpuinfo | head -n 1 | tr -s " " | sed 's/^ //')
 	[[ "$debug" -eq "1" ]] && Debug "Finding cpu.... Found as: '$cpu'"
+}
+
+detectGpu () {
+	gpu=`wmic path win32_VideoController get name | head -2 | tail -1`
+	[[ "$debug" -eq "1" ]] && Debug "Finding gpu.... Found as: '$gpu'"
 }
 
 detectOS () {
@@ -184,9 +189,9 @@ cat << EOF
 
 $f1         ,.=:^!^!t3Z3z.,                
 $f1        :tt:::tt333EE3                  ${f1}${user}${f7}@${f3}${host}
-$f1        Et:::ztt33EEE  $f2@Ee.,      ..,   
-$f1       ;tt:::tt333EE7 $f2;EEEEEEttttt33#   ${f1}OS: ${f7}${os} ${arch}
-$f1      :Et:::zt333EEQ.$f2 SEEEEEttttt33QL   ${f1}CPU: ${f7}${cpu}
+$f1        Et:::ztt33EEE  $f2@Ee.,      ..,   ${f1}OS: ${f7}${os} ${arch}
+$f1       ;tt:::tt333EE7 $f2;EEEEEEttttt33#   ${f1}CPU: ${f7}${cpu}
+$f1      :Et:::zt333EEQ.$f2 SEEEEEttttt33QL   ${f1}GPU: ${f7}${gpu}
 $f1      it::::tt333EEF $f2@EEEEEEttttt33F    ${f1}HDD: ${f7}$free / $size
 $f1     ;3=*^\`\`\`'*4EEV $f2:EEEEEEttttt33@.    ${f1}Memory: ${f7}${mem}
 $f4     ,.=::::it=., $f1\` $f2@EEEEEEtttz33QF     ${f1}Uptime: ${f7}$uptime
